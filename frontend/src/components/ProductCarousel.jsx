@@ -10,10 +10,16 @@ const ProductCarousel = () => {
     <Message variant='danger'>{error?.data?.message || error.error}</Message>
   ) : (
     <Carousel pause='hover' className='bg-primary mb-4'>
-      {products.map((product) => (
+      {products.map((product, index) => (
         <Carousel.Item key={product._id}>
           <Link to={`/product/${product._id}`}>
-            <Image src={product.image} alt={product.name} fluid />
+            <Image
+              src={product.image}
+              alt={product.name}
+              fluid
+              fetchpriority={index === 0 ? 'high' : 'auto'}
+              className='carousel-image'
+            />
             <Carousel.Caption className='carousel-caption'>
               <h2 className='text-white text-right'>
                 {product.name} (${product.price})

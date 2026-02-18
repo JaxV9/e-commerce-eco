@@ -2,7 +2,17 @@ import path from 'path';
 import express from 'express';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
+import Pyroscope from '@pyroscope/nodejs';
+
 dotenv.config();
+
+if (process.env.NODE_ENV === 'production') {
+  Pyroscope.init({
+    serverAddress: process.env.PYROSCOPE_SERVER_ADDRESS || 'http://localhost:4040',
+    appName: process.env.PYROSCOPE_APP_NAME || 'proshop-backend',
+  });
+  Pyroscope.start();
+}
 import connectDB from './config/db.js';
 import productRoutes from './routes/productRoutes.js';
 import userRoutes from './routes/userRoutes.js';

@@ -3,6 +3,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import Pyroscope from '@pyroscope/nodejs';
+import compression from 'compression';
 
 dotenv.config();
 
@@ -26,11 +27,20 @@ connectDB();
 
 const app = express();
 
+app.use(compression()); 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.use('/api/products', productRoutes);
+
+//http cache for users, we use the default CDN of Railway and we don't need to implement by ourself
+app.use('/api/products', (req, res, next) => {
+  if (req.method === 'GET') {
+    res.set('Cache-Control', 'public, s-maxage=3600'); 
+  }
+  next();
+}, productRoutes);
+
 app.use('/api/users', userRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/upload', uploadRoutes);

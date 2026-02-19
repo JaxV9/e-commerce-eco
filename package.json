@@ -18,6 +18,8 @@
   "license": "MIT",
   "dependencies": {
     "@pyroscope/nodejs": "^0.4.10",
+    "@sentry/node": "^10.39.0",
+    "@sentry/profiling-node": "^10.39.0",
     "bcryptjs": "^2.4.3",
     "colors": "^1.4.0",
     "compression": "^1.8.1",

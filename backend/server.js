@@ -1,9 +1,12 @@
+import '../instrument.js';
+
 import path from 'path';
 import express from 'express';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import Pyroscope from '@pyroscope/nodejs';
 import compression from 'compression';
+import * as Sentry from '@sentry/node';
 
 dotenv.config();
 
@@ -49,6 +52,11 @@ app.get('/api/config/paypal', (req, res) =>
   res.send({ clientId: process.env.PAYPAL_CLIENT_ID })
 );
 
+app.get("/api/debug-sentry", function mainHandler(req, res) {
+  const now = new Date().toISOString();
+  throw new Error(`Sentry test error at ${now}`);
+});
+
 if (process.env.NODE_ENV === 'production') {
   const __dirname = path.resolve();
   app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
@@ -64,6 +72,8 @@ if (process.env.NODE_ENV === 'production') {
     res.send('API is running....');
   });
 }
+
+Sentry.setupExpressErrorHandler(app);
 
 app.use(notFound);
 app.use(errorHandler);
